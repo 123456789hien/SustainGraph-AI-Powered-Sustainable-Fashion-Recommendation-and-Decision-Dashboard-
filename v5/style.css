@@ -1,0 +1,95 @@
+:root {
+  --bg-main: #f4faf6;
+  --bg-card: #ffffff;
+  --accent: #1c7f4d;
+  --accent-soft: #e0f3e8;
+  --accent-dark: #125336;
+  --border-subtle: #d6e7dd;
+  --text-main: #10241a;
+  --text-muted: #5f7466;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: radial-gradient(circle at top, #ecf8f1 0, #f4faf6 40%, #f4faf6 100%);
+  color: var(--text-main);
+  font-size: 16px;
+}
+
+#app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--accent-soft);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--accent-dark);
+}
+
+header p {
+  margin: 0;
+  font-size: 18px;
+}
+
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+section {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: var(--accent-dark);
+  transform: scale(1.05);
+}
+
+select {
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--border-subtle);
+}
+
+h2 {
+  margin: 0 0 16px;
+}
+
+#visualizations {
+  display: flex;
+  gap: 16px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
