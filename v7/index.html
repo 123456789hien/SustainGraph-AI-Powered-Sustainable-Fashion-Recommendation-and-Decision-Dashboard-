@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SustainGraph — Sustainable Fashion Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <div id="app-root">
+      <header>
+        <h1>SustainGraph</h1>
+        <p>AI-powered sustainable fashion recommendation dashboard</p>
+      </header>
+
+      <main>
+        <section id="file-upload">
+          <h2>Upload CSV Dataset</h2>
+          <div class="file-upload-container">
+            <input type="file" id="file-input" accept=".csv" />
+            <button id="load-sample">Load Sample Dataset</button>
+            <button id="auto-upload">Auto Upload Dataset</button>
+          </div>
+        </section>
+
+        <section id="filters">
+          <h2>Filters</h2>
+          <label for="brand-filter">Brand:</label>
+          <select id="brand-filter"></select>
+
+          <label for="category-filter">Category:</label>
+          <select id="category-filter"></select>
+
+          <label for="material-filter">Material:</label>
+          <select id="material-filter"></select>
+
+          <label for="priority">Sustainability Priority:</label>
+          <select id="priority">
+            <option value="0.6">High (0.6)</option>
+            <option value="0.5" selected>Balanced (0.5)</option>
+            <option value="0.3">Low (0.3)</option>
+          </select>
+
+          <button id="run-pipeline">Run Analysis</button>
+        </section>
+
+        <section id="kpi">
+          <h2>Key Performance Indicators</h2>
+          <div id="kpi-values"></div>
+        </section>
+
+        <section id="visualizations">
+          <h2>Visualizations</h2>
+          <div id="pca-plot"></div>
+          <div id="material-clusters"></div>
+        </section>
+
+        <section id="recommendations">
+          <h2>Recommendations</h2>
+          <div id="recommendations-list"></div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Dataset: Sustainable Fashion & Eco-Friendly Trends (Kaggle).</span>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
