@@ -41,7 +41,7 @@ fileInput.addEventListener('change', async (e) => {
 // Sự kiện tải dữ liệu tự động từ GitHub
 autoUploadBtn.addEventListener('click', async () => {
   try {
-    const response = await fetch('https://raw.githubusercontent.com/your-username/your-repo/main/public/Kaggle_sust_dataset.csv');
+    const response = await fetch('https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/v10/public/Kaggle_sust_dataset.csv');
     const text = await response.text();
     const parsed = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
     loadData(parsed);
