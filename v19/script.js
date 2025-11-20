@@ -31,7 +31,7 @@ let PCA_POINTS = [];
 
 // IMPORTANT: Auto-load URL — hãy chỉnh lại cho đúng repo của bạn
 const AUTOLOAD_URL =
-  "https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/v15/public/Kaggle_sust_dataset.csv";
+  "https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/v19/public/Kaggle_sust_dataset.csv";
 
 /* ========== LOAD HANDLERS ========== */
 
