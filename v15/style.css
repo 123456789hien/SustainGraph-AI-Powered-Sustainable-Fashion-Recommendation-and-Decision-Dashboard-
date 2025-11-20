@@ -1,0 +1,77 @@
+/* Styling for the app */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+#app-root {
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+h2 {
+  color: #5c5c5c;
+}
+
+#file-upload,
+#filters,
+#kpi,
+#visualizations,
+#recommendations {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background-color: #1c7f4d;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #155e39;
+}
+
+select, input[type="file"] {
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#kpi-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+#pca-plot,
+#material-clusters {
+  height: 400px;
+}
+
+#recommendations-list {
+  padding: 10px;
+  background-color: #fafafa;
+}
+
+.product-card {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
