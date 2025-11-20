@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SustainGraph — Sustainable Fashion Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <div id="app-root">
+      <header class="app-header">
+        <div class="brand-block">
+          <h1>SustainGraph</h1>
+          <p>AI-powered sustainable fashion recommendation & decision dashboard</p>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <!-- LEFT COLUMN: DATA + FILTERS + KPI -->
+        <section class="panel panel-left">
+          <section class="card">
+            <h2>1. Upload CSV Dataset</h2>
+            <p class="subnote">Use your Kaggle sustainable fashion CSV or auto-load from the repo.</p>
+            <div class="upload-row">
+              <div class="upload-main">
+                <label class="field-label">Choose File</label>
+                <input type="file" id="fileUpload" accept=".csv" />
+                <button id="load-sample" class="btn secondary-btn">Load Local CSV (Kaggle_sust_dataset.csv)</button>
+              </div>
+              <div class="upload-auto">
+                <label class="field-label">Auto Upload from GitHub</label>
+                <button id="auto-upload" class="btn primary-btn">Auto Upload Dataset</button>
+              </div>
+            </div>
+            <div id="load-status" class="status-chip"></div>
+          </section>
+
+          <section class="card">
+            <h2>2. Filters & Sustainability Priority</h2>
+            <div class="filters-grid">
+              <div class="field">
+                <label class="field-label">Material</label>
+                <select id="material-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Country</label>
+                <select id="country-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Year</label>
+                <select id="year-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Certification</label>
+                <select id="cert-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Market Trend</label>
+                <select id="trend-filter"></select>
+              </div>
+            </div>
+
+            <div class="priority-row">
+              <div class="field">
+                <label class="field-label">Sustainability Priority (Price vs SIS)</label>
+                <select id="priority">
+                  <option value="0.7">Maximize Sustainability</option>
+                  <option value="0.5" selected>Balanced (SIS & Price)</option>
+                  <option value="0.3">Budget Friendly</option>
+                </select>
+              </div>
+              <button id="run-pipeline" class="btn run-btn">🚀 Run Analysis & Recommendations</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2>3. Key Sustainability Indicators</h2>
+            <div id="kpi-row" class="kpi-row"></div>
+          </section>
+        </section>
+
+        <!-- RIGHT COLUMN: VISUALS + RECOMMENDER -->
+        <section class="panel panel-right">
+          <section class="card">
+            <h2>4. Materials Impact Map (PCA-style)</h2>
+            <div id="pca-plot" class="plot"></div>
+            <div id="material-clusters" class="cluster-legend"></div>
+          </section>
+
+          <section class="card">
+            <h2>5. Top Sustainable Recommendations</h2>
+            <p class="subnote">Ranked by hybrid score: SIS × priority + price sensitivity.</p>
+            <div id="recommendations-list" class="reco-list"></div>
+          </section>
+
+          <section class="card">
+            <h2>6. EDA - Material Type vs Price/SIS</h2>
+            <div id="eda-material-price-sis" class="plot"></div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>Dataset: Sustainable Fashion &amp; Eco-Friendly Trends (Kaggle). Deployed as a static GitHub Pages dashboard.</span>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
