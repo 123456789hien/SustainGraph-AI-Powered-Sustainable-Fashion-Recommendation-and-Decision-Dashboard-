@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SustainGraph — Sustainable Fashion Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- TẤT CẢ FILE NÀY PHẢI Ở CÙNG THƯ MỤC VỚI index.html -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- D3 cho đồ thị + TensorFlow.js cho ML regression & LSTM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <div id="app-root">
+      <header class="app-header">
+        <div class="brand-block">
+          <h1>SustainGraph</h1>
+          <p>
+            AI-powered sustainable fashion recommendation & decision dashboard
+            (client-side, GitHub Pages).
+          </p>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <!-- LEFT COLUMN: DATA + FILTERS + KPI -->
+        <section class="panel panel-left">
+          <!-- Upload -->
+          <section class="card">
+            <h2>1. Upload CSV Dataset</h2>
+            <p class="subnote">
+              Use your Kaggle sustainable fashion CSV or auto-load from the repo.
+            </p>
+            <div class="upload-row">
+              <div class="upload-main">
+                <label class="field-label">Choose File</label>
+                <input type="file" id="fileUpload" accept=".csv" />
+                <button id="load-sample" class="btn secondary-btn">
+                  Load Local CSV (Kaggle_sust_dataset.csv)
+                </button>
+              </div>
+              <div class="upload-auto">
+                <label class="field-label">Auto Upload from GitHub</label>
+                <button id="auto-upload" class="btn primary-btn">
+                  Auto Upload Dataset
+                </button>
+              </div>
+            </div>
+            <div id="load-status" class="status-chip"></div>
+          </section>
+
+          <!-- Filters -->
+          <section class="card">
+            <h2>2. Filters & Sustainability Priority</h2>
+            <div class="filters-grid">
+              <div class="field">
+                <label class="field-label">Country</label>
+                <select id="country-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Material</label>
+                <select id="material-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Year</label>
+                <select id="year-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Certification</label>
+                <select id="cert-filter"></select>
+              </div>
+              <div class="field">
+                <label class="field-label">Market Trend</label>
+                <select id="trend-filter"></select>
+              </div>
+            </div>
+
+            <div class="priority-row">
+              <div class="field">
+                <label class="field-label">
+                  Sustainability Priority (Price vs SIS)
+                </label>
+                <select id="priority">
+                  <option value="0.7">Maximize Sustainability</option>
+                  <option value="0.5" selected>Balanced (SIS &amp; Price)</option>
+                  <option value="0.3">Budget Friendly</option>
+                </select>
+              </div>
+              <button id="run-pipeline" class="btn run-btn">
+                🚀 Run Analysis & Recommendations
+              </button>
+            </div>
+          </section>
+
+          <!-- KPI -->
+          <section class="card">
+            <h2>3. Key Sustainability Indicators</h2>
+            <div id="kpi-row" class="kpi-row"></div>
+          </section>
+
+          <!-- SIS Regression Model Metrics -->
+          <section class="card">
+            <h2>4. SIS ML Regression Model</h2>
+            <p class="subnote">
+              Trains a neural regression model (TensorFlow.js) to approximate SIS
+              from carbon, water, waste, policies and price.
+            </p>
+            <button id="train-sis-ml" class="btn secondary-btn">
+              🧠 Train SIS Regression Model
+            </button>
+            <div id="sis-ml-metrics" class="ml-metrics"></div>
+          </section>
+        </section>
+
+        <!-- RIGHT COLUMN: VISUALS + EDA + FORECAST + RECOMMENDER -->
+        <section class="panel panel-right">
+          <!-- PCA / clustering -->
+          <section class="card">
+            <h2>5. Materials Impact Map (PCA-style)</h2>
+            <div id="pca-plot" class="plot"></div>
+            <div id="material-clusters" class="cluster-legend"></div>
+          </section>
+
+          <!-- EDA -->
+          <section class="card">
+            <h2>6. Exploratory Sustainability Analytics</h2>
+            <div class="eda-grid">
+              <div class="eda-block">
+                <h3>Material SIS &amp; Price</h3>
+                <div id="eda-materials" class="eda-plot"></div>
+                <p id="eda-materials-note" class="eda-note"></p>
+              </div>
+              <div class="eda-block">
+                <h3>Top Countries by Price &amp; SIS</h3>
+                <div id="eda-countries" class="eda-plot"></div>
+                <p id="eda-countries-note" class="eda-note"></p>
+              </div>
+            </div>
+            <div class="eda-grid">
+              <div class="eda-block">
+                <h3>Trends • Volume vs SIS &amp; Price</h3>
+                <div id="eda-trends" class="eda-plot"></div>
+                <p id="eda-trends-note" class="eda-note"></p>
+              </div>
+              <div class="eda-block">
+                <h3>Yearly SIS &amp; Price</h3>
+                <div id="eda-years" class="eda-plot"></div>
+                <p id="eda-years-note" class="eda-note"></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- LSTM forecast -->
+          <section class="card">
+            <h2>7. LSTM Forecast — SIS Trend by Year</h2>
+            <p class="subnote">
+              Uses a small LSTM network (TensorFlow.js) on yearly SIS to forecast
+              the next few years (within current filters).
+            </p>
+            <button id="run-forecast" class="btn secondary-btn">
+              🔮 Run LSTM Forecast
+            </button>
+            <div id="forecast-plot" class="plot small-plot"></div>
+            <div id="forecast-note" class="eda-note"></div>
+          </section>
+
+          <!-- Recommendations -->
+          <section class="card">
+            <h2>8. Top Sustainable Recommendations</h2>
+            <p class="subnote">
+              Ranked by hybrid score: SIS × priority + price sensitivity.
+            </p>
+            <div id="recommendations-list" class="reco-list"></div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>
+          Dataset: Sustainable Fashion &amp; Eco-Friendly Trends (Kaggle).
+          Deployed as a static GitHub Pages dashboard. All analytics client-side.
+        </span>
+      </footer>
+    </div>
+
+    <!-- Logic and UI scripts (cùng thư mục với index.html) -->
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
