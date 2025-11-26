@@ -2,8 +2,6 @@
 
 _**Link page:**_ https://123456789hien.github.io/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/
 
-**SustainGraph** is a browser-based web application designed to analyze, compare, and recommend sustainable fashion brands based on environmental, social, and governance (ESG) criteria. The tool allows users to explore sustainability metrics, cluster materials by environmental impact, and receive smart recommendations that balance sustainability and cost.
-
 ---
 
 ### Interactive Sustainability Analytics • SIS Scoring • Material Impact • EDA • Eco-Recommendation Engine
