@@ -174,6 +174,7 @@ Using:
 ---
 
 ## **3. Dataset Columns**
+_**Link dataset**_: https://www.kaggle.com/datasets/waqi786/sustainable-fashion-eco-friendly-trends
 
 Your CSV should include:
 
