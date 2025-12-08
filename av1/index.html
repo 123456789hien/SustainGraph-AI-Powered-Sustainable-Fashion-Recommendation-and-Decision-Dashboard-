@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SustainGraph — Sustainable Fashion Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app-root">
+      <header class="app-header">
+        <div class="brand-block">
+          <h1>SustainGraph</h1>
+          <p>
+            AI-powered sustainable fashion recommendation & decision dashboard
+            (client-side, GitHub Pages).
+          </p>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <!-- LEFT PANEL -->
+        <section class="panel panel-left">
+
+          <!-- Upload -->
+          <section class="card">
+            <h2>1. Upload CSV Dataset</h2>
+            <p class="subnote">Use your Kaggle dataset or auto-load from repo.</p>
+
+            <div class="upload-row">
+              <div>
+                <label class="field-label">Choose file</label>
+                <input type="file" id="fileUpload" accept=".csv" />
+                <button id="load-sample" class="btn secondary-btn">
+                  Load Local CSV
+                </button>
+              </div>
+
+              <div>
+                <label class="field-label">Auto-load from GitHub</label>
+                <button id="auto-upload" class="btn primary-btn">
+                  Auto Upload
+                </button>
+              </div>
+            </div>
+
+            <div id="load-status" class="status-chip"></div>
+          </section>
+
+          <!-- Filters -->
+          <section class="card">
+            <h2>2. Filters & Sustainability Priority</h2>
+
+            <div class="filters-grid">
+              <div class="field">
+                <label class="field-label">Country</label>
+                <select id="country-filter"></select>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Material</label>
+                <select id="material-filter"></select>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Year</label>
+                <select id="year-filter"></select>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Certification</label>
+                <select id="cert-filter"></select>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Market Trend</label>
+                <select id="trend-filter"></select>
+              </div>
+            </div>
+
+            <div class="priority-row">
+              <div class="field">
+                <label class="field-label">SIS Priority</label>
+                <select id="priority">
+                  <option value="0.7">Max Sustainability</option>
+                  <option value="0.5" selected>Balanced</option>
+                  <option value="0.3">Budget-friendly</option>
+                </select>
+              </div>
+
+              <button id="run-pipeline" class="btn run-btn">
+                🚀 Run Analysis
+              </button>
+            </div>
+          </section>
+
+          <!-- KPIs -->
+          <section class="card">
+            <h2>3. Key Sustainability Indicators</h2>
+            <div id="kpi-row" class="kpi-row"></div>
+          </section>
+        </section>
+
+        <!-- RIGHT PANEL -->
+        <section class="panel panel-right">
+
+          <!-- MATERIAL PCA -->
+          <section class="card">
+            <h2>4. Material Impact Map (PCA-style)</h2>
+            <div id="pca-plot" class="plot"></div>
+            <div id="material-clusters" class="cluster-legend"></div>
+          </section>
+
+          <!-- New: Elbow Method Charts -->
+          <section class="card">
+            <h2>5. Clustering Validation (Elbow Method)</h2>
+            <p class="subnote">Evaluating optimal K for materials & brands.</p>
+
+            <div id="elbow-material" class="plot small-plot"></div>
+            <div id="elbow-brand" class="plot small-plot"></div>
+          </section>
+
+          <!-- New: Pareto Frontier -->
+          <section class="card">
+            <h2>6. Pareto Frontier Analysis</h2>
+
+            <p class="subnote">Optimal Price–SIS trade-off (Materials + Brands)</p>
+
+            <h3>Material Pareto Frontier</h3>
+            <div id="pareto-material" class="plot small-plot"></div>
+
+            <h3>Brand Pareto Frontier</h3>
+            <div id="pareto-brand" class="plot small-plot"></div>
+          </section>
+
+          <!-- EDA -->
+          <section class="card">
+            <h2>7. Exploratory Data Insights</h2>
+
+            <div class="eda-grid">
+              <div class="eda-chart">
+                <div class="eda-chart-left">
+                  <h3 class="eda-title">Material — Price & SIS</h3>
+                  <div id="eda-material" class="plot small-plot"></div>
+                </div>
+                <div id="eda-material-insight" class="eda-insight"></div>
+              </div>
+
+              <div class="eda-chart">
+                <div class="eda-chart-left">
+                  <h3 class="eda-title">Country — Price & SIS</h3>
+                  <div id="eda-country" class="plot small-plot"></div>
+                </div>
+                <div id="eda-country-insight" class="eda-insight"></div>
+              </div>
+
+              <div class="eda-chart">
+                <div class="eda-chart-left">
+                  <h3 class="eda-title">Market Trend — Count & SIS</h3>
+                  <div id="eda-trend" class="plot small-plot"></div>
+                </div>
+                <div id="eda-trend-insight" class="eda-insight"></div>
+              </div>
+
+              <div class="eda-chart">
+                <div class="eda-chart-left">
+                  <h3 class="eda-title">Year — Price & SIS</h3>
+                  <div id="eda-year" class="plot small-plot"></div>
+                </div>
+                <div id="eda-year-insight" class="eda-insight"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Recommendations -->
+          <section class="card">
+            <h2>8. Top Sustainable Brand Recommendations</h2>
+            <div id="recommendations-list" class="reco-list"></div>
+          </section>
+
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>
+          Dataset: Sustainable Fashion & Eco-friendly Trends (Kaggle).
+          Deployed on GitHub Pages — 100% Client-side.
+        </span>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
