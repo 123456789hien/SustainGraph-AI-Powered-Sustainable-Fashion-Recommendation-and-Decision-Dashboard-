@@ -1,0 +1,303 @@
+/* -------------------------------------------------------
+   SustainGraph – Premium Minimal Green UI Theme
+   Style A: Elegant, quiet, luxury, minimal
+---------------------------------------------------------*/
+
+/* ---------------------- ROOT COLORS ----------------------*/
+:root {
+  --green-primary: #116e3a;
+  --green-light: #22c55e;
+  --green-mid: #a3e635;
+  --orange-high: #f97316;
+
+  --cluster-low: #22c55e;
+  --cluster-mid: #a3e635;
+  --cluster-high: #f97316;
+
+  --bg-main: #f8faf9;
+  --bg-card: #ffffff;
+
+  --text-main: #1a1a1a;
+  --text-light: #4d4d4d;
+
+  --border-soft: #e5e7eb;
+  --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
+
+  --accent: #1f8f4a;
+}
+
+/* ---------------------- GLOBAL ----------------------*/
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-main);
+  margin: 0;
+  padding: 0;
+  color: var(--text-main);
+}
+
+#app-root {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px 20px 120px;
+}
+
+/* ---------------------- HEADER ----------------------*/
+.app-header {
+  padding: 20px 10px 30px;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 5px;
+  color: var(--green-primary);
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+/* ---------------------- PANEL LAYOUT ----------------------*/
+.app-main {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 22px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.panel-right {
+  padding-right: 10px;
+}
+
+/* ---------------------- CARD ----------------------*/
+.card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 22px 26px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-soft);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 22px;
+  color: var(--green-primary);
+  letter-spacing: -0.3px;
+}
+
+.subnote {
+  font-size: 13.5px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+
+/* ---------------------- UPLOAD ----------------------*/
+.upload-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.upload-main, .upload-auto {
+  border: 1px dashed var(--accent);
+  border-radius: 12px;
+  padding: 16px;
+  background: #f0faf5;
+}
+
+.field-label {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ---------------------- BUTTONS ----------------------*/
+.btn {
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
+  font-weight: 600;
+}
+
+.primary-btn {
+  background: var(--green-primary);
+  color: white;
+}
+
+.primary-btn:hover {
+  background: #0f5c32;
+}
+
+.secondary-btn {
+  background: #e8f5ed;
+  color: var(--green-primary);
+}
+
+.secondary-btn:hover {
+  background: #d5f0df;
+}
+
+.run-btn {
+  background: var(--orange-high);
+  color: white;
+}
+
+.run-btn:hover {
+  background: #dd5f0e;
+}
+
+/* ---------------------- FILTERS ----------------------*/
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.field select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: white;
+  font-size: 14px;
+}
+
+/* ---------------------- KPI ----------------------*/
+.kpi-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.kpi-card {
+  flex: 1 1 calc(50% - 12px);
+  background: #f0faf5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--green-primary);
+  margin-top: 6px;
+}
+
+/* ---------------------- CHARTS ----------------------*/
+.plot {
+  width: 100%;
+  height: 340px;
+}
+
+.small-plot {
+  height: 260px;
+}
+
+.eda-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.eda-chart {
+  display: grid;
+  grid-template-columns: minmax(0, 75%) minmax(0, 25%);
+  gap: 20px;
+  align-items: start;
+}
+
+.eda-insight {
+  font-size: 13.5px;
+  padding: 10px 12px;
+  background: #f6fdf9;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  color: var(--text-light);
+  line-height: 1.45;
+}
+
+.eda-title {
+  margin-bottom: 8px;
+  font-size: 17px;
+  color: var(--green-primary);
+}
+
+/* ---------------------- CLUSTER LEGEND ----------------------*/
+.cluster-legend {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #333;
+}
+
+/* ---------------------- RECOMMENDATIONS ----------------------*/
+.reco-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reco-card {
+  padding: 16px;
+  border-radius: 14px;
+  background: #f0faf5;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.reco-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reco-rank {
+  background: var(--green-primary);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.reco-title {
+  font-size: 18px;
+  color: var(--green-primary);
+  font-weight: 700;
+}
+
+/* ---------------------- FOOTER ----------------------*/
+.app-footer {
+  margin-top: 40px;
+  padding: 20px 10px;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+/* ---------------------- RESPONSIVE ----------------------*/
+@media (max-width: 1100px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
