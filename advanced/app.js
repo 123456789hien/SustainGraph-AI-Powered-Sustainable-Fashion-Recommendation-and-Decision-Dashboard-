@@ -620,20 +620,8 @@ function buildRecommendations(rowsWithSIS, topN = 5) {
   return { maxSustainability, bestValue, balanced };
 }
 
-/* ========== MLP PREDICTOR (NEW - Optional Extension) ========== */
+/* ========== MLP POLLUTION PREDICTOR (UPDATED: 3 Environmental Inputs Only) ========== */
 
-/**
- * Simple MLP model for predicting environmental pollution
- * Uses TensorFlow.js for client-side training.
- *
- * Logic:
- *  - Input features  : Carbon_Footprint_MT, Water_Usage_Liters, Waste_Production_KG
- *  - Label (target)  : pollution = 1 - sustainability_rating_score
- *  - At inference    : predicted_sustainability = 1 - predicted_pollution
- *
- * SIS (Entropy-based) vẫn là thước đo chính thức.
- * MLP đóng vai trò pollution regressor / imputer.
- */
 let mlpModel = null;
 
 async function trainMLPPredictor(rows) {
@@ -642,58 +630,53 @@ async function trainMLPPredictor(rows) {
     return null;
   }
 
-  // 1. Chuẩn bị features: chỉ dùng các environmental indicators
-  const features = rows.map((r) => [
+  // Prepare training data — ONLY 3 environmental indicators
+  const features = rows.map(r => [
     toNumber(r.Carbon_Footprint_MT) || 0,
     toNumber(r.Water_Usage_Liters) || 0,
-    toNumber(r.Waste_Production_KG) || 0,
+    toNumber(r.Waste_Production_KG) || 0
   ]);
 
-  // 2. Chuẩn bị labels: pollution = 1 - sustainability_score
-  // ratingLetterToScore() trả về [0,1] ~ mức độ bền vững
-  const labels = rows.map((r) => {
-    const s = ratingLetterToScore(r.Sustainability_Rating); // 0–1
-    const safeS = isFinite(s) ? s : 0.5;
-    const pollution = 1 - safeS; // pollution cao ↔ sustainability thấp
-    return pollution;
+  // Pollution proxy: higher footprint = higher pollution
+  const labels = rows.map(r => {
+    const cf = toNumber(r.Carbon_Footprint_MT);
+    const wt = toNumber(r.Water_Usage_Liters);
+    const ws = toNumber(r.Waste_Production_KG);
+    if (!cf || !wt || !ws) return 0.5;
+    return Math.min(1, (cf + wt/1e6 + ws/1e5) / 1000);
   });
 
-  // 3. Normalize features
-  const featureTensor = tf.tensor2d(features);               // [N,3]
-  const labelTensor = tf.tensor2d(labels, [labels.length, 1]); // [N,1]
+  const featureTensor = tf.tensor2d(features);
+  const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
 
   const { mean, variance } = tf.moments(featureTensor, 0);
   const std = variance.sqrt();
   const normalizedFeatures = featureTensor.sub(mean).div(std.add(1e-7));
 
-  // 4. Build MLP model (input: 3 features → output: pollution ∈ [0,1])
   const model = tf.sequential({
     layers: [
-      tf.layers.dense({ inputShape: [3], units: 16, activation: "relu" }),
-      tf.layers.dropout({ rate: 0.2 }),
-      tf.layers.dense({ units: 8, activation: "relu" }),
-      tf.layers.dense({ units: 1, activation: "sigmoid" }), // output: pollution score
-    ],
+      tf.layers.dense({ inputShape: [3], units: 16, activation: 'relu' }),
+      tf.layers.dropout({ rate: 0.1 }),
+      tf.layers.dense({ units: 8, activation: 'relu' }),
+      tf.layers.dense({ units: 1, activation: 'sigmoid' })
+    ]
   });
 
   model.compile({
-    optimizer: tf.train.adam(0.01),
-    loss: "meanSquaredError",
-    metrics: ["mae"],
+    optimizer: tf.train.adam(0.005),
+    loss: 'meanSquaredError',
+    metrics: ['mae']
   });
 
-  // 5. Train model
   await model.fit(normalizedFeatures, labelTensor, {
-    epochs: 50,
+    epochs: 40,
     batchSize: 32,
     validationSplit: 0.2,
-    shuffle: true,
-    verbose: 0,
+    verbose: 0
   });
 
   mlpModel = { model, mean, std };
 
-  // Cleanup
   featureTensor.dispose();
   labelTensor.dispose();
   normalizedFeatures.dispose();
@@ -701,13 +684,9 @@ async function trainMLPPredictor(rows) {
   return mlpModel;
 }
 
-/**
- * Predict sustainability score using pollution-based MLP
- *
- * Input  : carbon, water, waste (+ recycling giữ lại để không hỏng API nhưng không dùng)
- * Output : predicted sustainability ∈ [0,1] (1 = rất bền vững, 0 = rất ô nhiễm)
- */
-function predictSustainabilityRating(carbon, water, waste, recycling) {
+
+// Predict Sustainability = 1 - Pollution
+function predictSustainabilityRating(carbon, water, waste) {
   if (!mlpModel) {
     console.error("Model not trained yet");
     return null;
@@ -715,23 +694,17 @@ function predictSustainabilityRating(carbon, water, waste, recycling) {
 
   const { model, mean, std } = mlpModel;
 
-  // Chỉ dùng 3 environmental indicators, bỏ qua recycling trong MLP
-  const c = toNumber(carbon) || 0;
-  const w = toNumber(water) || 0;
-  const wa = toNumber(waste) || 0;
-
-  const input = tf.tensor2d([[c, w, wa]]); // [1,3]
+  const input = tf.tensor2d([[carbon, water, waste]]);
   const normalized = input.sub(mean).div(std.add(1e-7));
+
   const prediction = model.predict(normalized);
-  const rawPollution = prediction.dataSync()[0]; // 0–1
+  const pollution = prediction.dataSync()[0]; // 0–1
 
   input.dispose();
   normalized.dispose();
   prediction.dispose();
 
-  // Clamp cho an toàn
-  const pollution = Math.min(1, Math.max(0, rawPollution));
-  const sustainability = 1 - pollution;
+  const sustainability = 1 - pollution; // invert
 
   return sustainability;
 }
