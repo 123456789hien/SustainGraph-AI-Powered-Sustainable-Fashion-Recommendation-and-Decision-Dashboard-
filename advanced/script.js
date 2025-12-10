@@ -1579,7 +1579,7 @@ function renderEdaYear() {
   }
 }
 
-/* ========== MLP PREDICTION - FIXED ========== */
+/* ========== MLP PREDICTION UI (UPDATED: 3 Environmental Inputs Only) ========== */
 
 const trainModelBtn = document.getElementById("train-model-btn");
 const predictionForm = document.getElementById("prediction-form");
@@ -1594,55 +1594,58 @@ if (trainModelBtn) {
       return;
     }
 
-    predictionStatus.textContent = "Training model... This may take a moment.";
+    predictionStatus.textContent = "Training model…";
     trainModelBtn.disabled = true;
 
     try {
       await window.trainMLPPredictor(PROCESSED_ROWS);
-      predictionStatus.textContent = "✓ Model trained successfully! You can now predict sustainability ratings.";
+      predictionStatus.textContent = "✓ Model trained. You can now run predictions.";
       predictionForm.style.display = "block";
-    } catch (error) {
-      predictionStatus.textContent = `✗ Training failed: ${error.message}`;
+    } catch (err) {
+      predictionStatus.textContent = "✗ Training failed: " + err.message;
       trainModelBtn.disabled = false;
     }
   });
 }
+
 
 if (predictBtn) {
   predictBtn.addEventListener("click", () => {
     const carbon = parseFloat(document.getElementById("pred-carbon").value);
     const water = parseFloat(document.getElementById("pred-water").value);
     const waste = parseFloat(document.getElementById("pred-waste").value);
-    const recycling = parseFloat(document.getElementById("pred-recycling").value);
 
-    if (isNaN(carbon) || isNaN(water) || isNaN(waste) || isNaN(recycling)) {
-      alert("Please fill in all fields with valid numbers!");
+    if (isNaN(carbon) || isNaN(water) || isNaN(waste)) {
+      alert("Please enter valid numerical values.");
       return;
     }
 
     if (!window.predictSustainabilityRating) {
-      alert("Model not trained yet. Please train the model first!");
+      alert("Model not trained yet.");
       return;
     }
 
     try {
-      const rating = window.predictSustainabilityRating(carbon, water, waste, recycling);
+      const sustainability = window.predictSustainabilityRating(
+        carbon,
+        water,
+        waste
+      );
 
-      // FIX: Ensure rating is a number before calling toFixed
-      if (rating !== null && rating !== undefined && typeof rating === 'number' && !isNaN(rating)) {
-        predictionResult.innerHTML = `
-          <div class="prediction-success">
-            <strong>✓ Predicted Sustainability Rating:</strong> ${rating.toFixed(4)}
-            <div class="prediction-details">
-              Based on: Carbon ${carbon} MT, Water ${water} L, Waste ${waste} KG, Recycling ${recycling}
-            </div>
+      const pollution = 1 - sustainability;
+
+      predictionResult.innerHTML = `
+        <div class="prediction-success">
+          <strong>Predicted Sustainability (0–1):</strong> ${sustainability.toFixed(4)}
+          <br>
+          <strong>Predicted Pollution (0–1):</strong> ${pollution.toFixed(4)}
+          <div class="prediction-details">
+            Inputs → Carbon: ${carbon} MT, Water: ${water} L, Waste: ${waste} KG
           </div>
-        `;
-        predictionResult.style.display = "block";
-      } else {
-        predictionResult.innerHTML = `<strong>Error:</strong> Prediction returned invalid value. Please check your inputs and try again.`;
-        predictionResult.style.display = "block";
-      }
+        </div>
+      `;
+
+      predictionResult.style.display = "block";
     } catch (error) {
       predictionResult.innerHTML = `<strong>Error:</strong> ${error.message}`;
       predictionResult.style.display = "block";
