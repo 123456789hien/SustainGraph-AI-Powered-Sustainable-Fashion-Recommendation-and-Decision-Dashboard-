@@ -1,205 +1,115 @@
-\documentclass[conference]{IEEEtran}
+# SustainGraph: AI-Powered Sustainable Fashion Recommendation and Decision Dashboard
 
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{array}
-\usepackage{caption}
-\usepackage{tikz}
-\usepackage{hyperref}
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)]()
+[![Version: 2.1](https://img.shields.io/badge/Version-2.1-blue.svg)]()
 
-\begin{document}
+## 🌟 Project Overview
 
-\title{SustainGraph: An AI-Powered Entropy-Based Sustainable Fashion Analytics and Recommendation Framework}
+**SustainGraph** is a sophisticated, AI-powered dashboard designed to assist fashion brands and supply chain managers in making data-driven decisions for sustainable sourcing and product development. It integrates advanced analytical techniques, including **Entropy Weighting**, **K-Means Clustering**, and **Multi-Objective Pareto Optimization**, to provide clear, actionable insights into the trade-offs between sustainability (SIS) and cost (Price).
 
-\author{
-\IEEEauthorblockN{Do Thi Hien}
-\IEEEauthorblockA{
-Graduate School of Business, HSE University, Moscow, Russia \\
-Program: Business Analytics \& Big Data Systems \\
-Email: (optional)
+The dashboard is built using pure HTML, CSS, and JavaScript, leveraging the power of **D3.js** for interactive and professional data visualization.
+
+## ✨ Key Features
+
+*   **Entropy Weighting Method:** Objectively determines the importance of environmental and policy attributes based on data variance (entropy), ensuring a data-driven approach to sustainability scoring.
+*   **K-Means Clustering:** Groups materials based on their environmental and policy scores, validated using the **Elbow Method** for optimal cluster count.
+*   **Multi-Objective Pareto Optimization:** Identifies **Pareto-Optimal** brands that offer the best possible trade-off between high Sustainability Index (SIS) and low Price.
+*   **Professional Exploratory Data Analysis (EDA):** Provides dual-axis visualizations for Material, Country, Market Trend, and Year, complete with detailed tooltips and actionable insight boxes.
+*   **Sustainability Attribute Prediction:** An optional Machine Learning (ML) extension to predict a product's Sustainability Rating based on its environmental attributes (Carbon, Water, Waste, Recycling).
+*   **Interactive Design:** Clean, modern, and responsive design with a consistent color palette.
+
+## 🚀 Getting Started
+
+To run the SustainGraph dashboard locally or deploy it on a platform like GitHub Pages, follow these simple steps:
+
+1.  **Clone the Repository:** Download or clone the repository containing the four core files (`index.html`, `style.css`, `app.js`, `script.js`).
+2.  **Open `index.html`:** Launch the dashboard by opening `index.html` in any modern web browser (Chrome, Firefox, Edge).
+3.  **Load Data:**
+    *   Click **"Auto Upload"** to load the sample dataset automatically.
+    *   *Alternatively*, click **"Upload CSV"** to load your own data (must conform to the required schema).
+4.  **Run Analysis:** Click the **"🚀 Run Analysis"** button to process the data, perform clustering, calculate scores, and render all visualizations.
+
+## 📊 Dashboard Sections Overview
+
+### 4. Exploratory Data Insights (EDA)
+
+This section provides a deep dive into the filtered dataset, utilizing a visually striking dual-axis design:
+
+| Chart | Left Axis (Bars) | Right Axis (Dots/Line) | Insight Box | Design Highlight |
+| :--- | :--- | :--- | :--- | :--- |
+| **Material** | Average Price (USD) | Average SIS | Top 10 Materials, Price/SIS Trade-off | Green Bars + Dark Green Dots |
+| **Country** | Average Price (USD) | Average SIS | Top 10 Countries, Sourcing Strategy | Dual-Axis, Interactive Tooltips |
+| **Market Trend** | Count (Frequency) | Average SIS | Trend Analysis, SIS by Trend | Clear Actionable Recommendations |
+| **Year** | Average Price (USD) | Average SIS | Time Trend Analysis | Price (Solid Line), SIS (Dashed Line) |
+
+### 5. Material Clustering (k=Optimal)
+
+Materials are clustered based on their normalized Environmental and Policy scores.
+
+*   **Elbow Method Validation:** Shows the optimal number of clusters (`k`) used for the analysis.
+*   **Cluster Scatter Plot:** Visualizes material clusters, with size representing brand count.
+*   **Cluster Interpretation:** Provides a table of statistics (mean, variance, CV) for each cluster, highlighting that **cluster separation is primarily driven by policy scores**.
+
+### 8. Multi-Objective Brand Recommendations
+
+This section presents the results of the Pareto Optimization, offering three distinct strategic views:
+
+| Tab | Sorting Logic | Primary Goal | Pill Tag |
+| :--- | :--- | :--- | :--- |
+| **Max Sustainability** | Highest SIS Score | Maximize Environmental Impact | Highest SIS |
+| **Best Value** | Lowest Price | Minimize Cost | Lowest Price |
+| **Balanced Trade-off** | Highest Pareto Score | Optimal Balance of SIS and Price | Balanced Trade-off |
+
+**Note:** Pareto-optimal solutions are not ranked globally; they are sorted within each category based on the specific strategic goal.
+
+### 9. Sustainability Attribute Prediction (Optional ML Extension)
+
+Allows users to input environmental attributes to predict the resulting Sustainability Rating. The prediction model is robust, featuring:
+
+*   **Input Validation:** Ensures all four input fields (Carbon, Water, Waste, Recycling) are valid.
+*   **Accurate Output:** Predicted rating is displayed with 4 decimal places.
+*   **Error Handling:** Clear messages for invalid inputs or prediction failures.
+
+## 💻 Technical Details
+
+### Pareto Score Calculation
+
+The balanced trade-off is calculated using a weighted average of normalized SIS and the inverse of normalized Price:
+
+```javascript
+// Normalization
+const sisNorm = (sis - minSIS) / (maxSIS - minSIS);
+const priceNorm = (price - minPrice) / (maxPrice - minPrice);
+
+// Pareto Score
+Maximum Sustainability: Select only the top 20% of Pareto brands with the highest SIS.
+Best Value: Select only the top 20% of Pareto brands with the lowest Price.
+Balanced Trade-off: Select only the top 20% of Pareto brands with the smallest Distance to Ideal (d) Index (closest to the ideal point).
+
+```
+
+### Prediction Robustness Fix
+
+The prediction result handling ensures the output is a valid number before formatting:
+
+```javascript
+if (rating !== null && rating !== undefined && typeof rating === 'number' && !isNaN(rating)) {
+  predictionResult.innerHTML = `Predicted Rating: ${rating.toFixed(4)}`;
+} else {
+  predictionResult.innerHTML = `Error: Prediction returned invalid value. Please check your inputs and try again.`;
 }
-}
+```
 
-\maketitle
+## 📜 License
 
-\begin{abstract}
-This paper presents \textbf{SustainGraph}, an AI-powered sustainability analytics and recommendation framework for the fashion industry using the Kaggle dataset “Sustainable Fashion \& Eco-Friendly Trends” (5000 brands, 10 countries). The system integrates a full methodological pipeline combining (1) Entropy Weight Method for objective sustainability scoring, (2) K-Means clustering with Elbow-based validation, (3) Multi-Objective Optimization via Pareto Frontier analysis, and (4) an interpretable recommendation mechanism offering Best-Value and Max-Sustainability alternatives. The framework demonstrates that most variation in the dataset originates from policy-related attributes rather than environmental indicators, giving rise to a high policy weight (0.7933) and a lower environmental weight (0.2067). Clustering experiments indicate two dominant sustainability archetypes driven primarily by certification prevalence, footprint intensity, and pricing. Pareto Frontier analysis identifies three optimal materials and four optimal brands, marking the trade-off efficient frontier for corporate sourcing decisions. The results highlight how AI, supported by entropy weighting and MOO techniques, can offer actionable sustainability intelligence to both brands and consumers.
-\end{abstract}
+This project is licensed under the **MIT License**. See the LICENSE file for details.
 
-\begin{IEEEkeywords}
-Sustainability Analytics, Entropy Weight Method, Pareto Frontier, Multi-Objective Optimization, Fashion Industry, K-Means Clustering, AI for Sustainability.
-\end{IEEEkeywords}
+## 👨‍💻 Version History
 
-\section{Introduction}
-The fashion industry remains one of the highest contributors to environmental degradation due to water pollution, carbon emissions, and textile waste. Despite efforts to adopt eco-friendly processes, sustainability evaluation remains inconsistent, subjective, and often biased due to the lack of standardized scoring mechanisms. This motivates the development of \textbf{SustainGraph}, an AI-powered dashboard integrating objective statistical weighting, cluster analysis, and multi-objective optimization for sustainability decision-making.
+*   **v2.1 (Final)**: Fixed all remaining syntax errors (`tooltip` redeclaration, D3.js chaining), implemented all user-requested design changes (EDA layout, tooltips, recommendation sorting), and ensured full production readiness.
+*   **v2.0**: Major feature integration, including Pareto Optimization and Entropy Weighting.
+*   **v1.0**: Initial core dashboard structure and data loading.
 
-This work builds on the Kaggle dataset ``Sustainable Fashion \& Eco-Friendly Trends'' (5000 entries) containing brand-level environmental metrics and policy attributes such as sustainability ratings, eco-friendly manufacturing, and recycling programs. We develop a scientific scoring method using the Entropy Weight Method and construct a recommendation system driven by Pareto-optimality.
-
-\section{Related Work}
-Prior literature on sustainability metrics often relies on subjective weighting or expert-driven schemes. Recent studies advocate for entropy-based objective weighting for multi-criteria environmental evaluations \cite{zhao2021entropy}. Multi-objective optimization (MOO) is widely applied for sustainability trade-offs in supply chains \cite{ghasemy2025}. Clustering methods are often used for environmental segmentation, though the selection of optimal cluster count remains a challenge \cite{larimian2013}.
-
-However, none of these works integrate entropy weighting, validated clustering, Pareto frontier analysis, and interactive analytics into an accessible decision-support tool for fashion sustainability. SustainGraph bridges this methodological gap.
-
-\section{Dataset Description}
-We use the publicly available Kaggle dataset ``Sustainable Fashion \& Eco-Friendly Trends'' containing 5000 brands across 10 countries and 6 material types. The dataset includes:
-
-\begin{itemize}
-\item Carbon Footprint (MT)
-\item Water Usage (Liters)
-\item Waste Production (KG)
-\item Sustainability Rating (A–D)
-\item Eco-Friendly Manufacturing (Yes/No)
-\item Recycling Programs (Yes/No)
-\item Average Price (USD)
-\item Market Trend
-\item Certifications
-\end{itemize}
-
-Missing values were preprocessed through normalization and mapping transforms.
-
-\section{Methodology}
-The SustainGraph pipeline consists of six core methodological components.
-
-\subsection{A. Entropy Weight Method (EWM)}
-Environmental indicators were normalized:
-
-\[
-x' = \frac{x - x_{\min}}{x_{\max} - x_{\min}}
-\]
-
-Entropy is computed as:
-
-\[
-E_j = -k \sum_i p_{ij} \ln(p_{ij})
-\]
-
-Diversity (information utility):
-
-\[
-d_j = 1 - E_j
-\]
-
-Weights:
-
-\[
-w_j = \frac{d_j}{\sum d_j}
-\]
-
-Group-level weights were computed as:
-
-\[
-w_{\text{env}} = 0.2067, \quad w_{\text{policy}} = 0.7933
-\]
-
-\subsection{B. Sustainability Index Score (SIS)}
-\[
-SIS = w_{\text{env}} \cdot EnvScore + w_{\text{policy}} \cdot PolicyScore
-\]
-
-\subsection{C. K-Means Clustering (Elbow Validated)}
-The optimal number of clusters was determined using the Elbow Method:
-
-\[
-WCSS_k = \sum_{clusters} \sum_{points} ||x_i - c_k||^2
-\]
-
-The optimal $k=2$.
-
-\subsection{D. Pareto Frontier Optimization}
-A brand $A$ dominates $B$ when:
-
-\[
-(SIS_A \geq SIS_B) \land (Price_A \leq Price_B)
-\]
-
-Pareto frontier identifies all non-dominated brands.
-
-\subsection{E. Recommendation Categories}
-Instead of a single ranking, we output two interpretable sets:
-
-\begin{itemize}
-\item \textbf{Max Sustainability:} highest SIS from the Pareto frontier
-\item \textbf{Best Value:} lowest price within non-dominated set
-\end{itemize}
-
-\section{Results}
-
-\subsection{A. Entropy Weight Analysis}
-Table I summarizes the entropy-based indicator diversity and weights.
-
-\begin{table}[h]
-\centering
-\caption{Entropy Weights for Indicator Groups}
-\begin{tabular}{lccc}
-\toprule
-Indicator & Entropy & Diversity & Weight \\
-\midrule
-CO$_2$ & 0.9778 & 0.0222 & 0.3256 \\
-Water & 0.9773 & 0.0227 & 0.3323 \\
-Waste & 0.9766 & 0.0234 & 0.3421 \\
-Rating & 0.9561 & 0.0439 & 0.2147 \\
-Eco-Friendly & 0.9196 & 0.0804 & 0.3935 \\
-Recycling & 0.9199 & 0.0801 & 0.3917 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Environmental indicators exhibit low variance, explaining the low entropy-diversity and ultimately low environmental weight.
-
-\subsection{B. Clustering Interpretation}
-Cluster 0 (High-Impact) shows:
-
-\begin{itemize}
-\item Higher certification frequency
-\item Lower carbon footprint
-\item Higher SIS
-\end{itemize}
-
-Cluster 1 (Low-Impact) exhibits:
-
-\begin{itemize}
-\item Higher price dispersion
-\item Lower policy scores
-\end{itemize}
-
-\subsection{C. Pareto Frontier (Materials and Brands)}
-Materials with Pareto efficiency:
-
-\begin{itemize}
-\item Bamboo Fabric
-\item Hemp
-\item Recycled Polyester
-\end{itemize}
-
-Brands on the Pareto frontier include Italian, UK, USA, and Indian manufacturers exhibiting optimal price–SIS balance.
-
-\section{Discussion}
-The unexpectedly high policy weight ($w_{policy} = 0.7933$) derives from greater diversity in policy indicators versus nearly homogeneous environmental metrics. This reflects either true homogenization of environmental footprints or limitations in dataset resolution.
-
-The new recommendation logic, separating “Best Value” and “Max Sustainability”, preserves multi-objective trade-off integrity.
-
-\section{Conclusion}
-SustainGraph demonstrates a rigorous, reproducible methodology combining entropy-based weighting, validated clustering, and Pareto optimization for sustainable fashion analytics. It offers interpretable and actionable insights for sourcing, consumer-facing applications, and ESG reporting.
-
-\section*{Acknowledgment}
-The author thanks faculty advisors from HSE University for methodological guidance.
-
-\begin{thebibliography}{00}
-
-\bibitem{zhao2021entropy}
-Zhao, W., et al. (2021). Application of improved entropy weighting in environmental evaluation.
-
-\bibitem{larimian2013}
-Larimian, T., et al. (2013). Fuzzy AHP models for environmental sustainability.
-
-\bibitem{liu2019}
-Liu, Y., et al. (2019). Sustainable supplier evaluation methods.
-
-\bibitem{ghasemy2025}
-Ghasemy Yaghin, R., \& Khalajmehri, K. (2025). Multi-objective modeling in textile sustainability.
-
-\end{thebibliography}
-
-\end{document}
+---
+**Status**: ✅ **PRODUCTION READY** | **Platform**: GitHub Pages | **Version**: 2.1 (Final)
