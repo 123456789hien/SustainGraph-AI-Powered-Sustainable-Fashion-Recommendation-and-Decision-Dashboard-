@@ -694,18 +694,29 @@ function predictSustainabilityRating(carbon, water, waste, recycling) {
 
   const { model, mean, std } = mlpModel;
 
+  // Input: raw environmental indicators
   const input = tf.tensor2d([[carbon, water, waste, recycling]]);
   const normalized = input.sub(mean).div(std.add(1e-7));
-  const prediction = model.predict(normalized);
-  const value = prediction.dataSync()[0];
 
+  const prediction = model.predict(normalized);
+  const rawValue = prediction.dataSync()[0]; // 0–1
+
+  // Giải phóng bộ nhớ TensorFlow.js
   input.dispose();
   normalized.dispose();
   prediction.dispose();
 
-  // Return the raw numerical prediction score (0 to 1)
-  return value;
+  // Diễn giải: rawValue càng lớn → ô nhiễm càng cao
+  // Sustainability rating = 1 - rawValue
+  let sustainabilityScore = 1 - rawValue;
+
+  // Clamp về [0, 1] cho chắc chắn
+  if (sustainabilityScore < 0) sustainabilityScore = 0;
+  if (sustainabilityScore > 1) sustainabilityScore = 1;
+
+  return sustainabilityScore;
 }
+
 
 /* ========== EXPORT MAIN PROCESSING FUNCTION ========== */
 
