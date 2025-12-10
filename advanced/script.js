@@ -1636,9 +1636,9 @@ if (predictBtn) {
 
       predictionResult.innerHTML = `
         <div class="prediction-success">
-          <strong>Predicted Sustainability (0–1):</strong> ${sustainability.toFixed(4)}
+          <strong>Predicted Pollution Index (0–1):</strong> ${sustainability.toFixed(4)}
           <br>
-          <strong>Predicted Pollution (0–1):</strong> ${pollution.toFixed(4)}
+          <strong>Predicted Sustainability Rating (0–1):</strong> ${pollution.toFixed(4)}
           <div class="prediction-details">
             Inputs → Carbon: ${carbon} MT, Water: ${water} L, Waste: ${waste} KG
           </div>
