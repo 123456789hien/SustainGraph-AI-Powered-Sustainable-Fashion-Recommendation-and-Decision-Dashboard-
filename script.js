@@ -52,7 +52,7 @@ fileUpload.addEventListener("change", (e) => {
 
 loadSampleBtn.addEventListener("click", () => {
   loadStatus.textContent = "Loading sample data...";
-  fetch("https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/advanced/Kaggle_sust_dataset.csv")
+  fetch("https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/Kaggle_sust_dataset.csv")
     .then((res) => res.text())
     .then((csv) => {
       const file = new File([csv], "sample.csv", { type: "text/csv" });
@@ -62,7 +62,7 @@ loadSampleBtn.addEventListener("click", () => {
 
 autoUploadBtn.addEventListener("click", () => {
   loadStatus.textContent = "Loading sample data...";
-  fetch("https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/advanced/Kaggle_sust_dataset.csv")
+  fetch("https://raw.githubusercontent.com/123456789hien/SustainGraph-AI-Powered-Sustainable-Fashion-Recommendation-and-Decision-Dashboard-/refs/heads/main/Kaggle_sust_dataset.csv")
     .then((res) => res.text())
     .then((csv) => {
       const file = new File([csv], "sample.csv", { type: "text/csv" });
