@@ -1656,14 +1656,14 @@ if (predictBtn) {
         const pollution = 1 - sustainability;
 
         predictionResult.innerHTML = `
-          <div class="prediction-success">
-            <strong>✓ Predicted Sustainability (MLP, 0–1):</strong> ${sustainability.toFixed(
-              4
-            )}
             <div class="prediction-details">
-              Implied pollution score (0–1, higher = more pollution): ${pollution.toFixed(
+              <strong> ✓ Predicted Sustainability (MLP, 0–1): </strong>${pollution.toFixed(
                 4
               )}<br>
+               <div class="prediction-success">
+               Implied pollution score (0–1, higher = more pollution): ${sustainability.toFixed(
+              4
+             )}<br>
               Based on: Carbon ${carbon} MT, Water ${water} L, Waste ${waste} KG, Recycling score ${recycling}
             </div>
           </div>
