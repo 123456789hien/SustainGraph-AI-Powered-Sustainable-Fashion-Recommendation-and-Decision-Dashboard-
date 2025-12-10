@@ -1579,7 +1579,7 @@ function renderEdaYear() {
   }
 }
 
-/* ========== MLP PREDICTION - FIXED ========== */
+/* ========== MLP PREDICTION – POLLUTION-BASED (UPDATED) ========== */
 
 const trainModelBtn = document.getElementById("train-model-btn");
 const predictionForm = document.getElementById("prediction-form");
@@ -1590,17 +1590,22 @@ const predictionResult = document.getElementById("prediction-result");
 if (trainModelBtn) {
   trainModelBtn.addEventListener("click", async () => {
     if (!PROCESSED_ROWS || PROCESSED_ROWS.length === 0) {
-      alert("Please load and process data first!");
+      alert("Please load and run the analysis first.");
       return;
     }
 
-    predictionStatus.textContent = "Training model... This may take a moment.";
+    predictionStatus.textContent =
+      "Training pollution-based MLP model... This may take a moment.";
     trainModelBtn.disabled = true;
 
     try {
+      // MLP learns pollution from environmental indicators (in app.js)
       await window.trainMLPPredictor(PROCESSED_ROWS);
-      predictionStatus.textContent = "✓ Model trained successfully! You can now predict sustainability ratings.";
-      predictionForm.style.display = "block";
+      predictionStatus.textContent =
+        "✓ Model trained successfully. You can now run what-if predictions.";
+      if (predictionForm) {
+        predictionForm.style.display = "block";
+      }
     } catch (error) {
       predictionStatus.textContent = `✗ Training failed: ${error.message}`;
       trainModelBtn.disabled = false;
@@ -1613,38 +1618,71 @@ if (predictBtn) {
     const carbon = parseFloat(document.getElementById("pred-carbon").value);
     const water = parseFloat(document.getElementById("pred-water").value);
     const waste = parseFloat(document.getElementById("pred-waste").value);
-    const recycling = parseFloat(document.getElementById("pred-recycling").value);
+    const recycling = parseFloat(
+      document.getElementById("pred-recycling").value
+    );
 
-    if (isNaN(carbon) || isNaN(water) || isNaN(waste) || isNaN(recycling)) {
-      alert("Please fill in all fields with valid numbers!");
+    if (
+      isNaN(carbon) ||
+      isNaN(water) ||
+      isNaN(waste) ||
+      isNaN(recycling)
+    ) {
+      alert("Please fill in all fields with valid numbers.");
       return;
     }
 
     if (!window.predictSustainabilityRating) {
-      alert("Model not trained yet. Please train the model first!");
+      alert("Model not trained yet. Please train the model first.");
       return;
     }
 
     try {
-      const rating = window.predictSustainabilityRating(carbon, water, waste, recycling);
+      // In the new logic, predictSustainabilityRating returns sustainability ∈ [0,1]
+      const sustainability = window.predictSustainabilityRating(
+        carbon,
+        water,
+        waste,
+        recycling
+      );
 
-      // FIX: Ensure rating is a number before calling toFixed
-      if (rating !== null && rating !== undefined && typeof rating === 'number' && !isNaN(rating)) {
+      if (
+        sustainability !== null &&
+        sustainability !== undefined &&
+        typeof sustainability === "number" &&
+        !isNaN(sustainability)
+      ) {
+        // Derived pollution score = 1 − sustainability (for interpretation)
+        const pollution = 1 - sustainability;
+
         predictionResult.innerHTML = `
           <div class="prediction-success">
-            <strong>✓ Predicted Sustainability Rating:</strong> ${rating.toFixed(4)}
+            <strong>✓ Predicted Sustainability (MLP, 0–1):</strong> ${sustainability.toFixed(
+              4
+            )}
             <div class="prediction-details">
-              Based on: Carbon ${carbon} MT, Water ${water} L, Waste ${waste} KG, Recycling ${recycling}
+              Implied pollution score (0–1, higher = more pollution): ${pollution.toFixed(
+                4
+              )}<br>
+              Based on: Carbon ${carbon} MT, Water ${water} L, Waste ${waste} KG, Recycling score ${recycling}
             </div>
           </div>
         `;
         predictionResult.style.display = "block";
       } else {
-        predictionResult.innerHTML = `<strong>Error:</strong> Prediction returned invalid value. Please check your inputs and try again.`;
+        predictionResult.innerHTML = `
+          <div class="prediction-error">
+            <strong>Error:</strong> Prediction returned an invalid value. Please check your inputs and try again.
+          </div>
+        `;
         predictionResult.style.display = "block";
       }
     } catch (error) {
-      predictionResult.innerHTML = `<strong>Error:</strong> ${error.message}`;
+      predictionResult.innerHTML = `
+        <div class="prediction-error">
+          <strong>Error:</strong> ${error.message}
+        </div>
+      `;
       predictionResult.style.display = "block";
     }
   });
