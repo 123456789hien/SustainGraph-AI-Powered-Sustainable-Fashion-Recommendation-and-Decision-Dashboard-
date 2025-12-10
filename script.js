@@ -1657,11 +1657,11 @@ if (predictBtn) {
 
         predictionResult.innerHTML = `
             <div class="prediction-details">
-              <strong> ✓ Predicted Sustainability (MLP, 0–1): </strong>${pollution.toFixed(
+              <strong> ✓ Predicted Pollution Index: </strong>${pollution.toFixed(
                 4
               )}<br>
                <div class="prediction-success">
-               Implied pollution score (0–1, higher = more pollution): ${sustainability.toFixed(
+                <strong> ✓ Sustainability (MLP, 0–1): </strong>${sustainability.toFixed(
               4
              )}<br>
               Based on: Carbon ${carbon} MT, Water ${water} L, Waste ${waste} KG, Recycling score ${recycling}
